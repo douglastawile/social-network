@@ -8,6 +8,7 @@ import morgan from "morgan";
 import "dotenv/config";
 
 import authRoute from "./routes/authRoute.js";
+import userRoute from "./routes/userRoute.js";
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 app.use("/api", authRoute);
+app.use("/api", userRoute);
 
 app.get("/", (req, res) => {
   res.send("API Running...");
