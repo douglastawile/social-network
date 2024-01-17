@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import validator from "validator";
+import bcrypt from "bcrypt";
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -34,6 +35,18 @@ const UserSchema = new mongoose.Schema({
       message: "Passwords are not the same.",
     },
   },
+});
+
+//Making the password hash with bcrypt
+UserSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  //Hash the password
+  const saltRound = 12;
+  const salt = await bcrypt.genSalt(saltRound);
+  this.password = await bcrypt.hash(this.password, salt);
+  this.passwordConfirm = undefined;
+  next();
 });
 
 export const User = mongoose.model("User", UserSchema);
