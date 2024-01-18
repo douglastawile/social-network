@@ -122,3 +122,42 @@ export const signin = async (req, res) => {
     return res.status(400).json({ error: "Internal server error" });
   }
 };
+
+// Protecting Users Route
+export const protect = async (req, res, next) => {
+  try {
+    //Getting token and check if it is there
+    let token;
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+    }
+    if (!token) {
+      return res
+        .status(401)
+        .json({ error: "You are not logged in. Please login to get access" });
+    }
+
+    // Verification of token
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+    //Check if user still exist
+    const currentUser = await User.findById(decoded._id);
+    if (!currentUser) {
+      return res
+        .status(401)
+        .json({
+          error: "The user belonging to this token does no longer exist",
+        });
+    }
+
+    //Grant access to the protected route
+    req.user = currentUser;
+    next();
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({ error: "Internal server error" });
+  }
+};
