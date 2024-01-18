@@ -79,22 +79,46 @@ export const signup = async (req, res) => {
   }
 };
 
-// export const signin = async(req, res) => {
-//   try {
-//     const {email, password} = req.body;
-//     if(!email || !password) {
-//       return res.status(422).json({error: "Please provide email and password."})
-//     }
+export const signin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res
+        .status(422)
+        .json({ error: "Please provide email and password." });
+    }
 
-//     // Check if user exists and password is correct
-//     const user = await User.findOne({email}).select("+password");
-//     if(!user || !await user.correctPassword(password, user.password)) {
-//       return res.status(401).json({error: "Incorrect email or password"})
-//     }
+    // Check if user exists and password is correct
+    const user = await User.findOne({ email }).select("+password");
+    if (!user || !(await user.correctPassword(password, user.password))) {
+      return res.status(401).json({ error: "Incorrect email or password" });
+    }
 
-//     const token = jwt.sign({_id: user._id, name: user.name, email: user.email, photo: user.photo}, process.env.JWT_SECRET, {expiresIn: process.env.EXPIRE_IN})
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(400).json({ error: "Internal server error" });
-//   }
-// }
+    const token = jwt.sign(
+      { _id: user._id, name: user.name, email: user.email, photo: user.photo },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.EXPIRE_IN }
+    );
+
+    res.cookie("jwt", token, {
+      expires: new Date(
+        Date.now() + process.env.COOKIE_EXPIRE_IN * 24 * 60 * 60 * 100
+      ),
+    });
+
+    res.status(200).json({
+      status: "Success",
+      message: "User successfully signed in.",
+      token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        photo: user.photo,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({ error: "Internal server error" });
+  }
+};
