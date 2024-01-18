@@ -146,11 +146,9 @@ export const protect = async (req, res, next) => {
     //Check if user still exist
     const currentUser = await User.findById(decoded._id);
     if (!currentUser) {
-      return res
-        .status(401)
-        .json({
-          error: "The user belonging to this token does no longer exist",
-        });
+      return res.status(401).json({
+        error: "The user belonging to this token does no longer exist",
+      });
     }
 
     //Grant access to the protected route
@@ -160,4 +158,21 @@ export const protect = async (req, res, next) => {
     console.error(error);
     return res.status(400).json({ error: "Internal server error" });
   }
+};
+
+export const restrictTo = (...roles) => {
+  return (req, res, next) => {
+    const isAuthorized =
+      req.profile &&
+      req.user &&
+      req.profile._id.toString() === req.user._id.toString();
+    if (!roles.includes(req.user.role) || !isAuthorized) {
+      return res.status(403).json({
+        error:
+          "Acces denied. You donot have permission to perform this action.",
+      });
+    }
+
+    next();
+  };
 };
