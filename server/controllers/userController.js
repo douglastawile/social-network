@@ -72,3 +72,18 @@ export const updateUser = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+// Removing user information from the database
+export const deleteUser = async (req, res) => {
+  try {
+    const user = req.profile;
+    await User.findByIdAndDelete({ _id: user._id });
+    res.status(200).json({
+      status: "Success",
+      message: "User account deleted successfully.",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};

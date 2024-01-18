@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  deleteUser,
   getUser,
   getUsers,
   updateUser,
@@ -10,7 +11,11 @@ const router = express.Router();
 
 router.route("/users").get(getUsers);
 
-router.route("/users/:userId").get(getUser).patch(updateUser);
+router
+  .route("/users/:userId")
+  .get(getUser)
+  .patch(updateUser)
+  .delete(deleteUser);
 
 router.param("userId", userByID);
 
