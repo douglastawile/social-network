@@ -1,4 +1,38 @@
+import multer from "multer";
+import sharp from "sharp";
+
 import { User } from "../models/UserModel.js";
+
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(res.status(401).json({ error: "Please upload only images." }), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+export const uploadUserPhoto = upload.single("photo");
+
+export const resizeUserPhoto = (req, res, next) => {
+  if (!req.file) return next();
+
+  req.file.filename = `user-${req.user?._id}-${Date.now()}.jpeg`;
+
+  sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat("jpeg")
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/users/${req.file.filename}`);
+
+  next();
+};
 
 //Getting user by ID
 export const userByID = async (req, res, next, id) => {
@@ -56,6 +90,8 @@ export const updateUser = async (req, res) => {
     }
 
     const filteredBody = filteredObj(req.body, "name", "email");
+    if (req.file) filteredBody.photo = req.file.filename;
+
     const updatedUser = await User.findByIdAndUpdate(
       req.profile._id,
       filteredBody,

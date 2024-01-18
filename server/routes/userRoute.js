@@ -3,7 +3,9 @@ import {
   deleteUser,
   getUser,
   getUsers,
+  resizeUserPhoto,
   updateUser,
+  uploadUserPhoto,
   userByID,
 } from "../controllers/userController.js";
 
@@ -14,7 +16,7 @@ router.route("/users").get(getUsers);
 router
   .route("/users/:userId")
   .get(getUser)
-  .patch(updateUser)
+  .patch(uploadUserPhoto, resizeUserPhoto, updateUser)
   .delete(deleteUser);
 
 router.param("userId", userByID);

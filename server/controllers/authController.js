@@ -1,4 +1,40 @@
+import jwt from "jsonwebtoken";
+import { promisify } from "util";
+import multer from "multer";
+import sharp from "sharp";
+
 import { User } from "../models/UserModel.js";
+
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(res.status(401).json({ error: "Please upload only images." }), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+export const uploadUserPhoto = upload.single("photo");
+
+export const resizeUserPhoto = (req, res, next) => {
+  if (!req.file) return next();
+
+  req.file.filename = `user-${req.user?._id}-${Date.now()}.jpeg`;
+
+  sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat("jpeg")
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/users/${req.file.filename}`);
+
+  next();
+};
 
 export const signup = async (req, res) => {
   try {
@@ -30,6 +66,7 @@ export const signup = async (req, res) => {
 
     //Save user to the database if all fields passes
     const newUser = new User({ name, email, password, passwordConfirm });
+    if (req.file) newUser.photo = req.file.filename;
     await newUser.save();
     res.status(201).json({
       status: "Success",
@@ -41,3 +78,23 @@ export const signup = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+// export const signin = async(req, res) => {
+//   try {
+//     const {email, password} = req.body;
+//     if(!email || !password) {
+//       return res.status(422).json({error: "Please provide email and password."})
+//     }
+
+//     // Check if user exists and password is correct
+//     const user = await User.findOne({email}).select("+password");
+//     if(!user || !await user.correctPassword(password, user.password)) {
+//       return res.status(401).json({error: "Incorrect email or password"})
+//     }
+
+//     const token = jwt.sign({_id: user._id, name: user.name, email: user.email, photo: user.photo}, process.env.JWT_SECRET, {expiresIn: process.env.EXPIRE_IN})
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(400).json({ error: "Internal server error" });
+//   }
+// }
