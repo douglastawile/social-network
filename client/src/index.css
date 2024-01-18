@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.dark {
+  --tw-bg-opacity: 1;
+  background-color: #1f2937; /* Change this color to your desired dark mode background */
+  color: #fff; /* Change this color to your desired dark mode text color */
+}
