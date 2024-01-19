@@ -6,7 +6,7 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import "dotenv/config";
-import path, {dirname} from "path";
+import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 
 import authRoute from "./routes/authRoute.js";
@@ -22,8 +22,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compress());
-app.use(cors());
-app.use(helmet());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+  })
+);
+//app.use(helmet());
 app.use(morgan("dev"));
 
 app.use("/api", authRoute);
