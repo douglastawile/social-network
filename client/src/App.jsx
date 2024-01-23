@@ -7,6 +7,9 @@ import UsersPage from "./users/UsersPage";
 import Navigation from "./components/Navigation";
 import SignupPage from "./auths/SignupPage";
 import SigninPage from "./auths/SigninPage";
+import ProfilePage from "./users/ProfilePage";
+import PrivateRoute from "./auths/PrivateRoute";
+import EditProfilePage from "./users/EditProfilePage";
 
 export default function App() {
   return (
@@ -37,6 +40,15 @@ export default function App() {
             <Route path="/users" element={<UsersPage />} />
             <Route path="/auth/signup" element={<SignupPage />} />
             <Route path="/auth/signin" element={<SigninPage />} />
+            <Route path="/user/:userId" element={<ProfilePage />} />
+            <Route
+              path="/user/edit/:userId"
+              element={
+                <PrivateRoute>
+                  <EditProfilePage />
+                </PrivateRoute>
+              }
+            />
           </Routes>
         </BrowserRouter>
       </div>
