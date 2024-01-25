@@ -16,6 +16,7 @@ const STATUS = {
 const initialValues = {
   name: "",
   email: "",
+  about: "",
   password: "",
   passwordConfirm: "",
   photo: "",
@@ -47,6 +48,7 @@ export default function EditProfilePage() {
             ...formData,
             name: response.name,
             email: response.email,
+            about: response.about,
             photo: response.photo,
           });
         }
@@ -85,9 +87,7 @@ export default function EditProfilePage() {
     const userData = new FormData();
     formData.name && userData.append("name", formData.name);
     formData.email && userData.append("email", formData.email);
-    // formData.password && userData.append("password", formData.password);
-    // formData.passwordConfirm &&
-    //   userData.append("passwordConfirm", formData.passwordConfirm);
+    userData.append("about", formData.about);
     formData.photo && userData.append("photo", formData.photo);
 
     if (isValid) {
@@ -190,6 +190,26 @@ export default function EditProfilePage() {
           <p role="alert" className="text-red-600">
             {(touched.name || status === STATUS.SUBMITTED) && errors.name}
           </p>
+        </div>
+
+        <div className="mb-3">
+          <label
+            htmlFor="about"
+            className="block text-sm font-medium text-slate-700 dark:text-slate-300"
+          >
+            About(optional):
+          </label>
+          <textarea
+            className="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+            id="about"
+            name="about"
+            placeholder="Please write something small about you..."
+            value={formData.about}
+            onChange={handleChanged}
+          />
+          {/* <p role="alert" className="text-red-600">
+            {(touched.email || status === STATUS.SUBMITTED) && errors.email}
+          </p> */}
         </div>
 
         <div className="mb-3">

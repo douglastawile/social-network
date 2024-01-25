@@ -83,10 +83,13 @@ export default function ProfilePage() {
         <div className="space-y-4 text-center divide-y dark:divide-slate-700">
           <div className="my-2 space-y-1">
             <h2 className="text-xl font-semibold sm:text-2xl">{user.name}</h2>
-            <p className="px-5 text-xs sm:text-base dark:text-slate-400">
-              Full-stack developer
-            </p>
-            <p className="px-5 text-xs sm:text-base dark:text-slate-400">
+            {user && user.about && (
+              <p className="px-5 text-xs sm:text-base my-2 dark:text-slate-400">
+                {user.about}
+              </p>
+            )}
+
+            <p className="px-5 text-xs sm:text-base text-slate-400 dark:text-slate-600">
               {user.email}
             </p>
           </div>

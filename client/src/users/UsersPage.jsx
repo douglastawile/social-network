@@ -27,6 +27,10 @@ export default function UsersPage() {
     fetchUsers();
   }, []);
 
+  const orderedUsers = users
+    .slice()
+    .sort((a, b) => b.created.localeCompare(a.date));
+
   if (error) throw error;
   if (loading) return <Loading />;
 
@@ -36,7 +40,7 @@ export default function UsersPage() {
         Users
       </h3>
       <ul role="list" className="p-6 divide-y divide-slate-200">
-        {users.map((user) => {
+        {orderedUsers.map((user) => {
           return (
             <li key={user._id} className="flex py-4 first:pt-0 last:pb-0">
               <img

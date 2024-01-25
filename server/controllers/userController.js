@@ -89,7 +89,7 @@ export const updateUser = async (req, res) => {
         .json({ error: "This route is not for password update." });
     }
 
-    const filteredBody = filteredObj(req.body, "name", "email");
+    const filteredBody = filteredObj(req.body, "name", "email", "about");
     if (req.file) filteredBody.photo = req.file.filename;
 
     const updatedUser = await User.findByIdAndUpdate(

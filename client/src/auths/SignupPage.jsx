@@ -69,7 +69,7 @@ export default function SignupPage() {
           setTimeout(() => {
             setFormData({ ...formData });
             setStatus(STATUS.COMPLETED);
-            toast.success("Sign uo success. Please login");
+            toast.success("Sign up success. Please login");
             navigate("/auth/signin");
           }, 3000);
         }

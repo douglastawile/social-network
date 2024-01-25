@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import logo from "../assets/doug.jpeg";
+import { isAuthenticated, clearJWT } from "../auths/authHelpers";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,6 +10,9 @@ const NavBar = () => {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const navigate = useNavigate();
+  //const jwt = isAuthenticated();
 
   return (
     <nav className="relative bg-white shadow dark:bg-slate-800">
@@ -83,18 +87,42 @@ const NavBar = () => {
               >
                 Users
               </Link>
-              <Link
-                to="/auth/signup"
-                className="px-3 py-2 mx-3 mt-2 text-slate-700 transition-colors duration-300 transform rounded-md lg:mt-0 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
-              >
-                Sign up
-              </Link>
-              <Link
-                to="/auth/signin"
-                className="px-3 py-2 mx-3 mt-2 text-slate-700 transition-colors duration-300 transform rounded-md lg:mt-0 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
-              >
-                Sign in
-              </Link>
+
+              {!isAuthenticated() && (
+                <>
+                  <Link
+                    to="/auth/signup"
+                    className="px-3 py-2 mx-3 mt-2 text-slate-700 transition-colors duration-300 transform rounded-md lg:mt-0 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
+                  >
+                    Sign up
+                  </Link>
+                  <Link
+                    to="/auth/signin"
+                    className="px-3 py-2 mx-3 mt-2 text-slate-700 transition-colors duration-300 transform rounded-md lg:mt-0 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
+                  >
+                    Sign in
+                  </Link>
+                </>
+              )}
+
+              {isAuthenticated() && (
+                <>
+                  <Link
+                    to={`/user/${isAuthenticated().user._id}`}
+                    className="px-3 py-2 mx-3 mt-2 text-slate-700 transition-colors duration-300 transform rounded-md lg:mt-0 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
+                  >
+                    My Profile
+                  </Link>
+                  <button
+                    onClick={() => {
+                      clearJWT(() => navigate("/"));
+                    }}
+                    className="px-3 py-2 mx-3 mt-2 text-slate-700 transition-colors duration-300 transform rounded-md lg:mt-0 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
+                  >
+                    Sign out
+                  </button>
+                </>
+              )}
             </div>
 
             <div className="flex items-center mt-4 lg:mt-0">
@@ -118,23 +146,27 @@ const NavBar = () => {
                 </svg>
               </button>
 
-              <button
-                type="button"
-                className="flex items-center focus:outline-none"
-                aria-label="toggle profile dropdown"
-              >
-                <div className="w-8 h-8 overflow-hidden border-2 border-slate-400 rounded-full">
-                  <img
-                    src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80"
-                    className="object-cover w-full h-full"
-                    alt="avatar"
-                  />
-                </div>
+              {isAuthenticated() && isAuthenticated().user && (
+                <button
+                  type="button"
+                  className="flex items-center focus:outline-none"
+                  aria-label="toggle profile dropdown"
+                >
+                  <div className="w-8 h-8 overflow-hidden border-2 border-slate-400 rounded-full">
+                    <img
+                      src={`http://localhost:3000/img/users/${
+                        isAuthenticated()?.user?.photo
+                      }`}
+                      className="object-cover w-full h-full"
+                      alt="avatar"
+                    />
+                  </div>
 
-                <h3 className="mx-2 text-slate-700 dark:text-gray-200 lg:hidden">
-                  Khatab wedaa
-                </h3>
-              </button>
+                  <h3 className="mx-2 text-slate-700 dark:text-slate-200 lg:hidden">
+                    {isAuthenticated()?.user?.name}
+                  </h3>
+                </button>
+              )}
             </div>
           </div>
         </div>
