@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import DarkModeToggle from "./components/DarkMode";
 import UsersPage from "./users/UsersPage";
-import Navigation from "./components/Navigation";
+import NavBar from "./components/Navigation";
 import SignupPage from "./auths/SignupPage";
 import SigninPage from "./auths/SigninPage";
 import ProfilePage from "./users/ProfilePage";
@@ -29,7 +29,7 @@ export default function App() {
         />
         <DarkModeToggle />
         <BrowserRouter>
-          <Navigation />
+          <NavBar />
           <Routes>
             <Route
               path="/"

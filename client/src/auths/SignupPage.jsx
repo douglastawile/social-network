@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { signup } from "./authApi";
@@ -231,6 +231,15 @@ export default function SignupPage() {
         >
           {status === STATUS.SUBMITTING ? "Submitting..." : "Sign Up"}
         </button>
+        <p className="my-2">
+          Already have an account?{" "}
+          <Link
+            to={`/auth/signin`}
+            className="text-blue-600 hover:text-blue-800"
+          >
+            Sign in
+          </Link>
+        </p>
       </form>
     </div>
   );

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { signin } from "./authApi";
@@ -161,6 +161,15 @@ export default function SigninPage() {
         >
           {status === STATUS.SUBMITTING ? "Submitting..." : "Sign In"}
         </button>
+        <p className="my-2">
+          Don&apos;t have an account?{" "}
+          <Link
+            to={`/auth/signup`}
+            className=" text-blue-600 hover:text-blue-800"
+          >
+            Sign up
+          </Link>
+        </p>
       </form>
     </div>
   );
