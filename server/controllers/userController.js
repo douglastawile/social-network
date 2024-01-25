@@ -37,7 +37,10 @@ export const resizeUserPhoto = (req, res, next) => {
 //Getting user by ID
 export const userByID = async (req, res, next, id) => {
   try {
-    const user = await User.findById(id);
+    const user = await User.findById(id)
+      .populate("following", "_id name")
+      .populate("followers", "_id name")
+      .exec();
     if (!user) {
       return res.status(404).json({ error: "User not found." });
     }
@@ -118,6 +121,66 @@ export const deleteUser = async (req, res) => {
       status: "Success",
       message: "User account deleted successfully.",
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+//Following users
+export const addFollowing = async (req, res, next) => {
+  try {
+    await User.findByIdAndUpdate(req.body.userId, {
+      $push: { following: req.body.followId },
+    });
+    next();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const addFollower = async (req, res) => {
+  try {
+    const result = await User.findByIdAndUpdate(
+      req.body.followId,
+      { $push: { followers: req.body.userId } },
+      { new: true }
+    )
+      .populate("following", "_id name")
+      .populate("followers", "_id name")
+      .exec();
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+//Unfollowing users
+export const removeFollowing = async (req, res, next) => {
+  try {
+    await User.findByIdAndUpdate(req.body.userId, {
+      $pull: { following: req.body.unfollowId },
+    });
+    next();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const removeFollower = async (req, res) => {
+  try {
+    const result = await User.findByIdAndUpdate(
+      req.body.unfollowId,
+      { $pull: { followers: req.body.userId } },
+      { new: true }
+    )
+      .populate("following", "_id name")
+      .populate("followers", "_id name")
+      .exec();
+    res.json(result);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
