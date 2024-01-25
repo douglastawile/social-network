@@ -69,3 +69,39 @@ export const deleteUser = async (params, credentials) => {
     throw new Error("Failed to delete user account from the server.");
   }
 };
+
+export const follow = async (params, credentials, followId) => {
+  try {
+    const response = await fetch(`${BASE_URL}/follow`, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${credentials.token}`,
+      },
+      body: JSON.stringify({ userId: params.userId, followId }),
+    });
+    return handleResponse(response);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to follow user.");
+  }
+};
+
+export const unfollow = async (params, credentials, unfollowId) => {
+  try {
+    const response = await fetch(`${BASE_URL}/unfollow`, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${credentials.token}`,
+      },
+      body: JSON.stringify({ userId: params.userId, unfollowId }),
+    });
+    return handleResponse(response);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to unfollow user.");
+  }
+};
