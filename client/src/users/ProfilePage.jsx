@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 
-import { getUser } from "./userApi";
+import { getUser, deleteUser } from "./userApi";
 import Loading from "../components/Loading";
-import { isAuthenticated } from "../auths/authHelpers";
+import { isAuthenticated, clearJWT } from "../auths/authHelpers";
 
 export default function ProfilePage() {
   const [user, setUser] = useState({});
-  const [error, setError] = useState(null);
+  //const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [redirectToSignin, setRedirectToSignin] = useState(false);
+  const [redirectToHome, setRedirectToHome] = useState(false);
 
   const { userId } = useParams();
   const jwt = isAuthenticated();
@@ -18,24 +19,58 @@ export default function ProfilePage() {
     const fetchUser = async () => {
       try {
         const response = await getUser({ userId }, { token: jwt.token });
-        if (response && response.error) {
-          setRedirectToSignin(true);
-        } else {
-          setUser(response);
-        }
+        setUser(response);
       } catch (error) {
-        setError(error);
+        console.error("Error fetching user:", error);
+        setRedirectToSignin(true);
       } finally {
         setLoading(false);
       }
     };
+
     fetchUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  //     const confirmDelete = window.confirm(
+  //       "Are you sure to delete your profile?"
+  //     );
+  //     if (confirmDelete) {
+  //       deleteUser({ userId }, { token: jwt.token }).then((response) => {
+  //         if (response.error) {
+  //           alert("Something went wrong.");
+  //         } else {
+  //           clearJWT(() => console.log("Deleted"));
+  //           setRedirectToHome(true);
+  //         }
+  //       });
+  //     }
+  //   };
 
-  if (error) throw error;
+  const deleteAccount = () => {
+    const confirmDelete = window.confirm(
+      "Are you sure to delete your profile?"
+    );
+    if (confirmDelete) {
+      deleteUser({ userId }, { token: jwt.token })
+        .then((response) => {
+          if (response.error) {
+            console.error("Error deleting account:", response.error);
+            alert("Something went wrong.");
+          } else {
+            clearJWT(() => console.log("Deleted"));
+            setRedirectToHome(true);
+          }
+        })
+        .catch((error) => {
+          console.error("Error deleting account:", error);
+          alert("Something went wrong.");
+        });
+    }
+  };
+
   if (redirectToSignin) return <Navigate to={`/auth/signin`} />;
   if (loading) return <Loading />;
+  if (redirectToHome) return <Navigate to={`/`} />;
 
   return (
     <>
@@ -67,7 +102,10 @@ export default function ProfilePage() {
                 >
                   Edit Profile
                 </Link>
-                <button className="py-1 px-3 rounded-full shadow-sm bg-red-600 hover:bg-red-800 text-sm">
+                <button
+                  onClick={deleteAccount}
+                  className="py-1 px-3 rounded-full shadow-sm bg-red-600 hover:bg-red-800 text-sm"
+                >
                   Delete Profile
                 </button>
               </p>
