@@ -5,6 +5,7 @@ import { getUser, deleteUser } from "./userApi";
 import Loading from "../components/Loading";
 import { isAuthenticated, clearJWT } from "../auths/authHelpers";
 import FollowProfileButton from "./FollowProfileButton";
+import ProfileTabs from "./ProfileTabs";
 
 export default function ProfilePage() {
   const [user, setUser] = useState({ following: [], followers: [] });
@@ -102,31 +103,39 @@ export default function ProfilePage() {
             <p className="px-5 text-xs sm:text-base text-slate-400 dark:text-slate-600">
               {user.email}
             </p>
+
+            <div className="my-2">
+              {isAuthenticated().user &&
+              isAuthenticated().user._id === user._id ? (
+                <p className="my-3">
+                  <Link
+                    to={`/user/edit/${user._id}`}
+                    className="py-1 px-3 rounded-full shadow-sm text-white bg-sky-600 hover:bg-sky-800 text-sm mr-2"
+                  >
+                    Edit Profile
+                  </Link>
+                  <button
+                    onClick={deleteAccount}
+                    className="py-1 px-3 rounded-full shadow-sm text-white bg-red-600 hover:bg-red-800 text-sm"
+                  >
+                    Delete Profile
+                  </button>
+                </p>
+              ) : (
+                <FollowProfileButton
+                  following={following}
+                  onButtonClick={clickFollowButton}
+                />
+              )}
+            </div>
           </div>
           <div className="flex justify-center pt-2 space-x-4 align-center">
-            {isAuthenticated().user &&
-            isAuthenticated().user._id === user._id ? (
-              <p className="my-3">
-                <Link
-                  to={`/user/edit/${user._id}`}
-                  className="py-1 px-3 rounded-full shadow-sm text-white bg-sky-600 hover:bg-sky-800 text-sm mr-2"
-                >
-                  Edit Profile
-                </Link>
-                <button
-                  onClick={deleteAccount}
-                  className="py-1 px-3 rounded-full shadow-sm text-white bg-red-600 hover:bg-red-800 text-sm"
-                >
-                  Delete Profile
-                </button>
-              </p>
-            ) : (
-              <FollowProfileButton
-                following={following}
-                onButtonClick={clickFollowButton}
-              />
-            )}
+            <ProfileTabs
+              following={user?.following}
+              followers={user?.followers}
+            />
           </div>
+          {`Joined: ${new Date(user.created).toDateString()}`}
         </div>
       </div>
     </>

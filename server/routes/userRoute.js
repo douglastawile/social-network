@@ -3,6 +3,7 @@ import {
   addFollower,
   addFollowing,
   deleteUser,
+  findPeople,
   getUser,
   getUsers,
   removeFollower,
@@ -33,6 +34,8 @@ router
 router.route("/users/follow").put(protect, addFollowing, addFollower);
 
 router.route("/users/unfollow").put(protect, removeFollowing, removeFollower);
+
+router.route("/users/findpeople/:userId").get(protect, findPeople);
 
 router.param("userId", userByID);
 

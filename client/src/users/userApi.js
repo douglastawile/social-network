@@ -105,3 +105,20 @@ export const unfollow = async (params, credentials, unfollowId) => {
     throw new Error("Failed to unfollow user.");
   }
 };
+
+export const findPeople = async (params, credentials) => {
+  try {
+    const response = await fetch(`${BASE_URL}/findpeople/${params.userId}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${credentials.token}`,
+      },
+    });
+    return handleResponse(response);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to find user.");
+  }
+};

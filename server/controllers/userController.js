@@ -186,3 +186,15 @@ export const removeFollower = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+export const findPeople = async (req, res) => {
+  const following = req.profile.following;
+  following.push(req.profile._id);
+  try {
+    const users = await User.find({ _id: { $nin: following } }).select("name");
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
