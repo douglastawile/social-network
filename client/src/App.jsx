@@ -10,6 +10,7 @@ import SigninPage from "./auths/SigninPage";
 import ProfilePage from "./users/ProfilePage";
 import PrivateRoute from "./auths/PrivateRoute";
 import EditProfilePage from "./users/EditProfilePage";
+import FindPeople from "./users/FindPeople";
 
 export default function App() {
   return (
@@ -34,7 +35,12 @@ export default function App() {
             <Route
               path="/"
               element={
-                <h1 className="text-4xl text-center my-24">Coming Soon...</h1>
+                <div className="grid grid-cols-3 gap-4">
+                  <h1 className="col-span-2 text-4xl text-center my-24">
+                    Coming Soon...
+                  </h1>
+                  <FindPeople />
+                </div>
               }
             />
             <Route path="/users" element={<UsersPage />} />

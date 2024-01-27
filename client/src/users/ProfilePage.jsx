@@ -86,6 +86,14 @@ export default function ProfilePage() {
   return (
     <>
       <div className="flex flex-col justify-center max-w-lg my-4 mx-4 p-6 shadow-md rounded-xl sm:px-12 sm:mx-auto dark:bg-slate-900 dark:text-slate-100">
+        <div className="my-2">
+          <span className="text-slate-400 dark:text-slate-600">
+            {user.following.length} Following
+          </span>
+          <span className="text-slate-400 float-right dark:text-slate-600">
+            {user.followers.length} Followers
+          </span>
+        </div>
         <img
           src={`http://localhost:3000/img/users/${user?.photo}`}
           alt={user.name}

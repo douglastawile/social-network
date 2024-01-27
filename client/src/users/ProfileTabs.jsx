@@ -8,7 +8,7 @@ const Tabs = ({ color, following, followers }) => {
 
   return (
     <>
-      <div className="flex flex-wrap dark:text-slate-600">
+      <div className="flex flex-wrap dark:text-slate-700">
         <div className="w-full">
           <ul
             className="flex mb-0 list-none flex-wrap pt-3 pb-4 flex-row"
@@ -83,7 +83,7 @@ const Tabs = ({ color, following, followers }) => {
                         to={`/user/${person._id}`}
                         className="ml-3 overflow-hidden"
                       >
-                        <p className="text-sm font-medium text-slate-900 dark:text-slate-200">
+                        <p className="text-sm font-medium text-slate-900 dark:text-slate-400">
                           {person.name}
                         </p>
                       </Link>
