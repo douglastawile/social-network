@@ -11,6 +11,7 @@ import ProfilePage from "./users/ProfilePage";
 import PrivateRoute from "./auths/PrivateRoute";
 import EditProfilePage from "./users/EditProfilePage";
 import FindPeople from "./users/FindPeople";
+import PostsPage from "./posts/PostsPage";
 
 export default function App() {
   return (
@@ -36,9 +37,7 @@ export default function App() {
               path="/"
               element={
                 <div className="grid grid-cols-3 gap-4">
-                  <h1 className="col-span-2 text-4xl text-center my-24">
-                    Coming Soon...
-                  </h1>
+                  <PostsPage />
                   <FindPeople />
                 </div>
               }

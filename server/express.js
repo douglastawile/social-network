@@ -11,6 +11,7 @@ import { fileURLToPath } from "url";
 
 import authRoute from "./routes/authRoute.js";
 import userRoute from "./routes/userRoute.js";
+import postRoute from "./routes/postRoute.js";
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use(morgan("dev"));
 
 app.use("/api", authRoute);
 app.use("/api", userRoute);
+app.use("/api", postRoute);
 
 app.use(express.static(path.join(__dirname, "public")));
 
